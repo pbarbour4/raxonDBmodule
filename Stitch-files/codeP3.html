@@ -1,0 +1,466 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dumastas Institutional Lender Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary": "#516072",
+                    "outline": "#76777d",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-variant": "#e0e3e5",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c6c6cd",
+                    "surface-bright": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "primary": "#000000",
+                    "on-secondary-fixed-variant": "#39485a",
+                    "primary-container": "#131b2e",
+                    "on-background": "#191c1e",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#556477",
+                    "background": "#f7f9fb",
+                    "tertiary-container": "#271901",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2d",
+                    "surface-container-low": "#f2f4f6",
+                    "on-tertiary-fixed": "#271901",
+                    "secondary-container": "#d2e1f7",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary": "#000000",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-container": "#7c839b",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d8dadc",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed": "#d4e4fa",
+                    "secondary-fixed-dim": "#b9c8de",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "inverse-primary": "#bec6e0",
+                    "surface-tint": "#565e74",
+                    "surface-container": "#eceef0",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#98805d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "max-width": "1440px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "sm": "8px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Public Sans"],
+                    "display-lg": ["Public Sans"],
+                    "mono-data": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Public Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        .data-row:hover { background-color: #F1F5F9; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- Sidebar Navigation (Raxon Bridge - Shared Component Logic) -->
+<aside class="flex flex-col h-screen p-md gap-sm fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low w-64 z-50">
+<div class="flex items-center gap-md px-sm py-md">
+<div class="w-10 h-10 rounded-lg flex items-center justify-center"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTun3Hqlj6KdWA5j2AQeKhxryn7xOLSCZsqyO6zuqWIhwUTmAH0sCwG1fF6MP4I3lJQD3my6ScPSx0Nu624XI3AbdD0G79afU3X70VyxII2qOjJCo0DqFh5OVk2RP3o13kAizIo1MFsXRhdegpkekbh1ru9QJGvr-aGLLthPIRPBz2oXbdrIpqZcrZoa37OrXuRmrgV2dDZX5UR368cbNJPDQ-G2jyRm3NxiBMYrIjAP0LAXvQoiSrvEoGQ4kUVU95RQM21-8Kohk" alt="Raxon Logo" class="h-10 w-10 object-contain"></div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-surface">Raxon Bridge</h1>
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Dumastas Managed</p>
+</div>
+</div>
+<nav class="mt-xl space-y-base flex-1">
+<a class="flex items-center gap-md p-md bg-primary-container text-on-primary-container rounded-lg group scale-95 active:scale-100 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-bold text-label-bold">Overview</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg group scale-95 active:scale-100 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-label-bold text-label-bold">Transactions</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg group scale-95 active:scale-100 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">currency_exchange</span>
+<span class="font-label-bold text-label-bold">Borrowing</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg group scale-95 active:scale-100 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-bold text-label-bold">Security</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md space-y-base">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold">Settings</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold">Audit Log</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar (Dumastas - Shared Component Logic) -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 border-b border-outline-variant bg-surface sticky top-0 z-40">
+<div class="flex items-center gap-xl">
+<span class="font-display-lg text-display-lg font-bold text-primary">Dumastas</span>
+<nav class="hidden md:flex gap-lg">
+<a class="text-primary font-bold border-b-2 border-primary py-2 font-label-bold text-label-bold" href="#">Dashboard</a>
+<a class="text-secondary hover:text-primary transition-colors font-label-bold text-label-bold" href="#">History</a>
+<a class="text-secondary hover:text-primary transition-colors font-label-bold text-label-bold" href="#">Queue</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm pr-md border-r border-outline-variant">
+<button class="p-base text-secondary hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-base text-secondary hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">shield_lock</span>
+</button>
+<button class="p-base text-secondary hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</button>
+</div>
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="Professional corporate headshot of a senior institutional asset manager, clean lighting, minimalist background, neutral business attire, extremely high definition and professional photography style for a high-end fintech platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBya0yjCJV_zw_oyib4LhqsJBYnOTObQ93QQL1W7vWo4NP72K2ulIegyD5lYjo_LfFuE19-lzncpKqDc8UsDB3PwRToxJNx0CgzEIFUcKHXg4G4jm5YwGeP22FJ82xhRmQsk1hcqBZdSVBOrEjZ6Sw2kkFI7DU0bkMgwRJaPGk85J7MU3BBNrYvoRZTwGJnYMQNpuATb5enP_FHoxzFlsV_dZjJ0zRjFPdgLYCXamRz7rphI9D95sQtmCLOk8qFcqqYEJFbi4vK_w">
+<button class="text-secondary hover:text-primary transition-colors font-label-bold text-label-bold">Support</button>
+<button class="bg-primary text-on-primary px-md py-sm rounded text-label-bold font-bold uppercase active:opacity-80 transition-opacity">Secure Logout</button>
+</div>
+</div>
+</header>
+<div class="p-margin-desktop space-y-xl max-w-max-width mx-auto">
+<!-- Hero Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Current Value Card -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-widest mb-base">Current Token Value</p>
+<h2 id="data-token-value" class="font-display-lg text-display-lg font-bold text-primary">$1,244.09</h2>
+</div>
+<div class="mt-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-green-600 text-sm" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<p id="data-token-change" class="font-mono-data text-mono-data text-green-600">+1.24% (24h)</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-widest mb-base">Total Collateral Value</p>
+<h2 id="data-total-collateral" class="font-display-lg text-display-lg font-bold text-primary">$41.2M</h2>
+</div>
+<div class="mt-md">
+<p id="data-investor-count" class="font-mono-data text-mono-data text-on-surface-variant">Across 14 Investors</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-widest mb-base">Weighted LTV</p>
+<h2 id="data-weighted-ltv" class="font-display-lg text-display-lg font-bold text-primary">62.4%</h2>
+</div>
+<div class="mt-md w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div id="data-ltv-bar" class="bg-primary h-full" style="width: 62.4%"></div>
+</div>
+</div>
+<div class="bg-primary-container p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-bold text-label-bold text-on-primary-container uppercase tracking-widest mb-base">Total Outstanding Loans</p>
+<h2 id="data-total-loans" class="font-display-lg text-display-lg font-bold text-inverse-primary">$25.7M</h2>
+</div>
+<button class="mt-md w-full py-sm bg-white text-primary font-label-bold text-label-bold rounded hover:bg-opacity-90 transition-all">New Transaction</button>
+</div>
+</div>
+<!-- Main Grid: Investor List & Awaiting Approval -->
+<div class="grid grid-cols-12 gap-xl">
+<!-- Investor Table (Col 8) -->
+<section class="col-span-12 lg:col-span-8 space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-bold">Institutional Investor Exposure</h3>
+<div class="flex gap-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+<input class="pl-xl pr-md py-sm border border-outline-variant bg-surface focus:ring-0 focus:border-primary text-body-md font-body-md w-64" placeholder="Filter investors..." type="text">
+</div>
+<button class="p-sm border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="bg-white border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">Investor Entity</th>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">Loan Balance</th>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">Collateral (DUM)</th>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">LTV Ratio</th>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">Headroom</th>
+<th class="px-md py-sm font-label-bold text-label-bold text-secondary uppercase">Status</th>
+</tr>
+</thead>
+<tbody id="exposure-tbody" class="divide-y divide-outline-variant">
+</tbody>
+</table>
+<div class="p-md flex justify-between items-center bg-surface-container-low border-t border-outline-variant">
+<p id="exposure-count" class="font-body-sm text-body-sm text-secondary">Showing 1-10 of 14 Investors</p>
+<div class="flex gap-base">
+<button data-action="prev" class="px-md py-1 border border-outline-variant bg-white font-label-bold text-label-bold disabled:opacity-50">Previous</button>
+<button data-action="next" class="px-md py-1 border border-outline-variant bg-white font-label-bold text-label-bold">Next</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Awaiting Approval (Col 4) -->
+<aside class="col-span-12 lg:col-span-4 space-y-md">
+<h3 class="font-headline-sm text-headline-sm font-bold">Awaiting Approval</h3>
+<div id="approval-cards" class="space-y-md">
+<!-- Approval cards populated by JS -->
+</div>
+</aside>
+</div>
+<!-- Detailed Analysis Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="bg-white border border-outline-variant p-lg space-y-md">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-headline-sm font-bold">Collateral Concentration</h4>
+<span class="material-symbols-outlined text-secondary">info</span>
+</div>
+<div class="h-48 w-full flex items-end gap-md px-md">
+<!-- Simplified Bar Chart Representative -->
+<div class="flex-1 bg-primary h-4/5 rounded-t" title="Top Tier"></div>
+<div class="flex-1 bg-primary h-3/5 rounded-t" title="Mid Tier"></div>
+<div class="flex-1 bg-primary h-2/5 rounded-t" title="Institutional"></div>
+<div class="flex-1 bg-primary h-1/2 rounded-t" title="Retail Managed"></div>
+<div class="flex-1 bg-primary h-3/4 rounded-t" title="Reserves"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-bold text-label-bold">
+<span class="">Tier 1</span>
+<span class="">Tier 2</span>
+<span class="">Tier 3</span>
+<span class="">Tier 4</span>
+<span class="">Reserves</span>
+</div>
+</div>
+<div class="bg-white border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<h4 class="font-headline-sm text-headline-sm font-bold mb-base">Risk Distribution</h4>
+<p class="font-body-sm text-body-sm text-secondary">Automated risk assessment across entire lending pool.</p>
+</div>
+<div id="risk-distribution" class="space-y-md mt-lg">
+<div class="space-y-xs">
+<div class="flex justify-between font-label-bold text-label-bold">
+<span class="">Low Risk (LTV &lt; 50%)</span>
+<span class="">42%</span>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[42%]"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between font-label-bold text-label-bold">
+<span class="">Moderate (LTV 50-70%)</span>
+<span class="">48%</span>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[48%]"></div>
+</div>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between font-label-bold text-label-bold">
+<span class="">Elevated (LTV &gt; 70%)</span>
+<span class="">10%</span>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-error h-full w-[10%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="mt-xl px-margin-desktop py-lg border-t border-outline-variant bg-surface-container-low">
+<div class="max-w-max-width mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
+<p class="font-body-sm text-body-sm text-secondary">© 2024 Dumastas Institutional Services. All assets secured via Raxon Protocol.</p>
+<div class="flex gap-lg">
+<a class="font-label-bold text-label-bold text-secondary hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-bold text-label-bold text-secondary hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-bold text-label-bold text-secondary hover:text-primary transition-colors" href="#">API Docs</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Simple Micro-interaction Script -->
+<script>
+        async function api(url) {
+            const r = await fetch(url, {credentials:'same-origin'});
+            if (r.status===401||r.status===403) { window.location.href='/login'; return null; }
+            if (!r.ok) { console.error(url,r.status); return null; }
+            return r.json();
+        }
+        function fmtN(n,d=2) { return (+n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+        function fmtM(n) {
+            const v=+n;
+            if(v>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+            if(v>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
+            if(v>=1e3) return '$'+(v/1e3).toFixed(1)+'K';
+            return '$'+v.toFixed(0);
+        }
+        function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+
+        async function loadSummary() {
+            const d = await api('/api/lender/summary');
+            if (!d) return;
+            set('data-token-value',     '$'+fmtN(d.token_price||0));
+            set('data-token-change',    (d.token_change_pct>=0?'+':'')+fmtN(d.token_change_pct,2)+'% (24h)');
+            set('data-total-collateral', fmtM(d.total_collateral_usd||0));
+            set('data-investor-count',  'Across '+d.investor_count+' Investors');
+            set('data-weighted-ltv',    fmtN(d.weighted_ltv_pct||0,1)+'%');
+            set('data-total-loans',     fmtM(d.total_loans_usd||0));
+            const ltvBar = document.getElementById('data-ltv-bar');
+            if (ltvBar) ltvBar.style.width = (d.weighted_ltv_pct||0)+'%';
+        }
+
+        let exposurePage = 1;
+        async function loadExposure(page) {
+            exposurePage = page || 1;
+            const d = await api('/api/lender/exposure?page='+exposurePage);
+            if (!d) return;
+            const tbody = document.getElementById('exposure-tbody');
+            if (!tbody) return;
+            const rows = d.rows || [];
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-md py-xl text-center text-secondary">No loan positions</td></tr>';
+            } else {
+                tbody.innerHTML = rows.map(e => {
+                    const init = (e.institution_name||'?').charAt(0).toUpperCase();
+                    const ltv  = +e.ltv_ratio_pct;
+                    const ltvCls = ltv < 65 ? 'font-mono-data text-mono-data' : 'font-mono-data text-mono-data text-amber-700 font-bold';
+                    const hdCls  = +e.headroom_usd > 0 ? 'font-mono-data text-mono-data text-green-600' : 'font-mono-data text-mono-data text-amber-700';
+                    const stCls  = e.status==='active'
+                        ? 'bg-emerald-50 text-emerald-700 px-sm py-1 rounded text-[10px] font-bold uppercase border border-emerald-100'
+                        : 'bg-amber-50 text-amber-700 px-sm py-1 rounded text-[10px] font-bold uppercase border border-amber-100';
+                    const stTxt  = e.status==='active' ? 'Healthy' : e.status.charAt(0).toUpperCase()+e.status.slice(1);
+                    return `<tr class="data-row transition-colors cursor-pointer">
+                        <td class="px-md py-lg"><div class="flex items-center gap-sm">
+                            <div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center font-bold text-primary">${init}</div>
+                            <div><p class="font-body-md font-bold text-on-surface">${e.institution_name}</p>
+                            <p class="font-label-bold text-label-bold text-on-surface-variant">${e.owner_id.slice(0,12)}</p></div>
+                        </div></td>
+                        <td class="px-md py-lg font-mono-data text-mono-data">$${fmtN(e.loan_balance,0)}</td>
+                        <td class="px-md py-lg font-mono-data text-mono-data">${fmtN(e.collateral_dum,2)}</td>
+                        <td class="px-md py-lg"><span class="${ltvCls}">${fmtN(ltv,1)}%</span></td>
+                        <td class="px-md py-lg"><p class="${hdCls}">${+e.headroom_usd>=0?'+':''}${fmtM(e.headroom_usd)}</p></td>
+                        <td class="px-md py-lg"><span class="${stCls}">${stTxt}</span></td>
+                    </tr>`;
+                }).join('');
+            }
+            document.querySelector('#exposure-count').textContent = 'Showing '+(rows.length)+' of '+(d.total||rows.length)+' Investors';
+        }
+
+        async function loadApprovalCards() {
+            const d = await api('/api/lender/operations/pending?limit=3');
+            if (!d) return;
+            const container = document.getElementById('approval-cards');
+            if (!container) return;
+            const ops = d.operations || [];
+            container.innerHTML = ops.map(op => {
+                const p = op.request_payload||{};
+                return `<div class="bg-white border border-outline-variant p-md relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
+                    <div class="flex justify-between items-start mb-sm">
+                        <span class="bg-amber-100 text-amber-800 px-sm py-0.5 rounded text-[10px] font-bold uppercase">Pending Custodian</span>
+                        <span class="font-mono-data text-mono-data text-secondary text-xs">#${op.operation_id.slice(0,8)}</span>
+                    </div>
+                    <p class="font-body-md font-bold mb-xs">${op.type}</p>
+                    <p class="font-body-sm text-secondary mb-md">${p.institution||''} — ${fmtN(p.amount||0,0)} ${p.token_id||'DUM'} tokens</p>
+                    <div class="flex items-center justify-between pt-md border-t border-outline-variant">
+                        <div><p class="font-label-bold text-label-bold text-secondary uppercase">USD Value</p>
+                        <p class="font-mono-data text-primary">$${fmtN(p.usd_value||0)}</p></div>
+                    </div>
+                </div>`;
+            }).join('') + `<div class="pt-md"><button class="w-full flex items-center justify-between p-md border border-outline-variant bg-surface-container-high hover:bg-surface-container-highest transition-all group">
+                <div class="flex items-center gap-md"><span class="material-symbols-outlined text-secondary">history</span><span class="font-body-md font-bold">Transaction History</span></div>
+                <span class="material-symbols-outlined">chevron_right</span></button></div>`;
+        }
+
+        async function loadCollateral() {
+            const d = await api('/api/lender/collateral');
+            if (!d || !d.risk) return;
+            const risk = d.risk;
+            const colorMap = {'Low Risk (LTV < 50%)':'bg-emerald-500','Moderate (LTV 50-70%)':'bg-amber-500','Elevated (LTV > 70%)':'bg-error'};
+            const riskEl = document.getElementById('risk-distribution');
+            if (riskEl) {
+                riskEl.innerHTML = risk.map(b => `<div class="space-y-xs">
+                    <div class="flex justify-between font-label-bold text-label-bold"><span>${b.label}</span><span>${b.percent}%</span></div>
+                    <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+                        <div class="${colorMap[b.label]||'bg-primary'} h-full" style="width:${b.percent}%"></div>
+                    </div></div>`).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([loadSummary(), loadExposure(1), loadApprovalCards(), loadCollateral()]);
+            document.querySelector('[data-action="prev"]')?.addEventListener('click', () => loadExposure(Math.max(1,exposurePage-1)));
+            document.querySelector('[data-action="next"]')?.addEventListener('click', () => loadExposure(exposurePage+1));
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dumastas Institutional Manager Dashboard</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary": "#516072",
+                    "outline": "#76777d",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-variant": "#e0e3e5",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c6c6cd",
+                    "surface-bright": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "primary": "#000000",
+                    "on-secondary-fixed-variant": "#39485a",
+                    "primary-container": "#131b2e",
+                    "on-background": "#191c1e",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#556477",
+                    "background": "#f7f9fb",
+                    "tertiary-container": "#271901",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2d",
+                    "surface-container-low": "#f2f4f6",
+                    "on-tertiary-fixed": "#271901",
+                    "secondary-container": "#d2e1f7",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary": "#000000",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-container": "#7c839b",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d8dadc",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed": "#d4e4fa",
+                    "secondary-fixed-dim": "#b9c8de",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "inverse-primary": "#bec6e0",
+                    "surface-tint": "#565e74",
+                    "surface-container": "#eceef0",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#98805d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "max-width": "1440px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "sm": "8px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Public Sans"],
+                    "display-lg": ["Public Sans"],
+                    "mono-data": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Public Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        .institutional-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.125rem;
+            transition: border-color 0.2s ease;
+        }
+        .institutional-card:hover {
+            border-color: #CBD5E1;
+        }
+        .status-chip {
+            padding: 2px 8px;
+            border-radius: 0.125rem;
+            display: inline-flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .active-tab { background-color: #d2e1f7; color: #556477; border-radius: 0.25rem; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Sidebar Navigation (Raxon Bridge Style) -->
+<aside class="flex flex-col h-screen p-md gap-sm fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant w-64 z-50">
+<div class="flex items-center gap-md px-base mb-lg">
+<div class="w-10 h-10 flex items-center justify-center overflow-hidden"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAksXJQ9LPGipAgk20w227Kb4hKW07tdZ4aRmk85fQpqz7P00rEbluQBf4hLpZoA80Ja0YUOQRPg5q8IVTD4AmDkfZ1R9-OrkIsy7Nh9A5OXBtAfd1FuZoZ80ZiKdNpvn8MSYrNH2Ds1DlKzbv1xlrodMbxoeqWuK1xBLSQzzms5oDkUNB7CvmOgW5JsYpzhiTsuByat44p_0ENdinHkC2pPOYdBA1Nzm4grR_6gQMGF9WUODJOHMo5zn7hhi4ZD3eCwuxqK-ktT-k" alt="Raxon Logo" class="w-full h-full object-cover"></div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-surface">Raxon Bridge</h1>
+<p class="font-label-bold text-[10px] text-secondary tracking-widest uppercase">Dumastas Managed</p>
+</div>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-lg font-label-bold text-label-bold transition-all scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-all font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined">account_balance</span> Transactions
+            </a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-all font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined">currency_exchange</span> Borrowing
+            </a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-all font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span> Security
+            </a>
+</nav>
+<div class="mt-auto space-y-1">
+<button data-action="new-tx" class="w-full bg-primary text-on-primary font-label-bold text-label-bold py-md px-md rounded mb-md hover:bg-opacity-90 transition-colors">
+                New Transaction
+            </button>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-all font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-all font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined">receipt_long</span> Audit Log
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 border-b border-outline-variant bg-surface sticky top-0 z-40">
+<div class="flex items-center gap-xl">
+<h2 class="font-display-lg text-headline-md font-bold text-primary">Dashboard</h2>
+<nav class="hidden md:flex gap-lg">
+<a class="text-primary font-bold border-b-2 border-primary py-2 font-label-bold text-label-bold" href="#">Dashboard</a>
+<a class="text-secondary hover:text-primary transition-colors py-2 font-label-bold text-label-bold" href="#">History</a>
+<a class="text-secondary hover:text-primary transition-colors py-2 font-label-bold text-label-bold" href="#">Queue</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex gap-sm mr-md border-r border-outline-variant pr-md">
+<button class="p-2 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-2 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined">shield_lock</span></button>
+<button class="p-2 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined">account_balance_wallet</span></button>
+</div>
+<div class="flex items-center gap-sm">
+<div class="text-right">
+<p class="font-label-bold text-label-bold text-primary">Institutional Manager</p>
+<p class="text-[10px] text-secondary font-medium">Dumastas Fund</p>
+</div>
+<img class="w-8 h-8 rounded-full bg-surface-container-highest object-cover" data-alt="Institutional profile photo of a professional male manager in a minimalist corporate office setting with high-key lighting and a refined professional atmosphere. The image uses a clean, bright color palette with subtle navy and slate grey tones, reflecting financial stability and corporate precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4k1O6fvGOiQjNtf0om19W85Sb8LJuQC65Vwe1EF-jsFGcWd9FYBcWCsy3M_btKNWljIic608H3gF3P_rqIKuVWQkdaZQeOWIOIe7RF_ibRKxJoZ2RaX2PvFY8BgUuGR5yCQr_W_YTOXk2-5qJZn-fzcUeTw7qeSuzuNQFM8ubkgUTPYfyrpOEs555EfWesCdbDj2yxvljmxSclXSzr7kgcM-tmDP2vVN8eqs-OWcKzibWX-xxexSU4Ydj0nTCjSQbZ2Bt6FJcgBo">
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="px-margin-desktop py-xl max-w-max-width mx-auto">
+<!-- Overall MMF Metric & Time Display -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<span class="font-label-bold text-[10px] text-secondary uppercase tracking-[0.2em]">Overall MMF Performance</span>
+<div class="flex items-center gap-md mt-base">
+<h3 id="data-mmf-value" class="font-display-lg text-display-lg text-primary">$1,429,203,551.42</h3>
+<span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded text-xs font-bold">+0.12% <span class="font-normal text-[10px] opacity-70">24h</span></span>
+</div>
+</div>
+<div class="text-right">
+<p id="data-last-sync" class="font-mono-data text-mono-data text-secondary">Last Sync: 2023-11-24 14:32:01 UTC</p>
+<button data-action="refresh" class="text-primary font-label-bold text-label-bold hover:underline transition-all mt-base flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-sm">refresh</span> Refresh Node
+                    </button>
+</div>
+</div>
+<!-- Bento Summary Cards -->
+<div class="bento-grid mb-xl">
+<!-- Main Holding -->
+<div class="col-span-12 lg:col-span-3 institutional-card p-lg flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-md">
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Total Tokens Held</p>
+<span class="material-symbols-outlined text-secondary opacity-50">toll</span>
+</div>
+<p id="data-total-tokens" class="font-headline-md text-headline-md text-primary font-bold">12,450,291.50</p>
+</div>
+<div class="mt-xl">
+<p class="text-[10px] text-secondary uppercase font-bold tracking-tighter">Asset Reference</p>
+<p class="font-mono-data text-mono-data">DUM-MMF-001</p>
+</div>
+</div>
+<!-- Value Holdings -->
+<div class="col-span-12 lg:col-span-3 institutional-card p-lg flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-md">
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Value of Holdings</p>
+<span class="material-symbols-outlined text-secondary opacity-50">payments</span>
+</div>
+<p id="data-value-holdings" class="font-headline-md text-headline-md text-primary font-bold">$12,456,516.65</p>
+</div>
+<div class="mt-xl">
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div id="data-alloc-bar" class="bg-primary h-full w-[88%]"></div>
+</div>
+<p class="text-[10px] text-secondary mt-2 flex justify-between uppercase font-bold"><span class="">Allocation</span><span id="data-alloc-pct" class="">88.4%</span></p>
+</div>
+</div>
+<!-- Unencumbered Tokens -->
+<div class="col-span-12 lg:col-span-3 institutional-card p-lg">
+<div class="flex justify-between items-start mb-md">
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Unencumbered Tokens</p>
+<span class="material-symbols-outlined text-emerald-500">lock_open</span>
+</div>
+<p id="data-unencumbered" class="font-headline-md text-headline-md text-primary font-bold">8,100,000.00</p>
+<div class="mt-xl p-md bg-surface-container-low rounded border border-dashed border-outline-variant">
+<p class="text-[11px] text-secondary leading-tight">Available for immediate redemption or collateral use.</p>
+</div>
+</div>
+<!-- Encumbered Tokens -->
+<div class="col-span-12 lg:col-span-3 institutional-card p-lg">
+<div class="flex justify-between items-start mb-md">
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Encumbered Tokens</p>
+<span class="material-symbols-outlined text-error opacity-50">lock</span>
+</div>
+<p id="data-encumbered" class="font-headline-md text-headline-md text-primary font-bold">4,350,291.50</p>
+<div class="mt-xl">
+<div class="flex gap-2">
+<div class="flex-1 text-center border-r border-outline-variant">
+<p class="text-[9px] text-secondary uppercase font-bold">Lending</p>
+<p class="text-xs font-bold text-primary">3.2M</p>
+</div>
+<div class="flex-1 text-center">
+<p class="text-[9px] text-secondary uppercase font-bold">Frozen</p>
+<p class="text-xs font-bold text-primary">1.1M</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Headroom and Approval Sections -->
+<div class="grid grid-cols-12 gap-xl">
+<!-- Borrowing Headroom (Circular Gauge Visual) -->
+<div class="col-span-12 lg:col-span-4 institutional-card p-xl flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute top-md left-md">
+<p class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">Borrowing Headroom</p>
+</div>
+<div class="relative w-48 h-48 mt-lg">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle id="data-gauge-circle" class="text-primary transition-all duration-1000 ease-out" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="165.87" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span id="data-utilization" class="text-display-lg font-bold">70%</span>
+<span class="text-[10px] text-secondary uppercase font-bold tracking-widest">Utilized</span>
+</div>
+</div>
+<div class="mt-xl w-full grid grid-cols-2 gap-md pt-lg border-t border-outline-variant">
+<div>
+<p class="text-[10px] text-secondary uppercase font-bold">Total Limit</p>
+<p id="data-total-limit" class="font-mono-data text-primary">$10.0M</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-secondary uppercase font-bold">Available</p>
+<p id="data-avail-limit" class="font-mono-data text-primary">$3.0M</p>
+</div>
+</div>
+</div>
+<!-- Awaiting Approval Section -->
+<div class="col-span-12 lg:col-span-8 institutional-card flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary">pending_actions</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Awaiting Approval</h4>
+</div>
+<a class="text-primary font-label-bold text-label-bold flex items-center gap-base hover:opacity-70 transition-opacity" href="#">
+                            View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="flex-grow overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-secondary font-label-bold text-label-bold border-b border-outline-variant">
+<tr>
+<th class="px-lg py-md font-bold uppercase tracking-wider">Transaction ID</th>
+<th class="px-lg py-md font-bold uppercase tracking-wider">Asset</th>
+<th class="px-lg py-md font-bold uppercase tracking-wider">Amount</th>
+<th class="px-lg py-md font-bold uppercase tracking-wider">Requested By</th>
+<th class="px-lg py-md font-bold uppercase tracking-wider">Custodian Status</th>
+<th class="px-lg py-md font-bold uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody id="approval-tbody" class="font-body-sm text-body-sm divide-y divide-outline-variant"></tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Cluster -->
+<div class="mt-xl flex justify-between items-center">
+<div class="flex gap-md">
+<button class="px-lg py-md border border-outline-variant bg-white text-primary font-label-bold text-label-bold hover:bg-surface-container-low transition-all flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">history</span> Transaction History
+                    </button>
+<button data-action="export" class="px-lg py-md border border-outline-variant bg-white text-primary font-label-bold text-label-bold hover:bg-surface-container-low transition-all flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">download</span> Export Report (PDF/CSV)
+                    </button>
+</div>
+<div class="flex items-center gap-md text-secondary">
+<span class="text-[11px] font-medium italic">All funds held under custodian agreement #MMF-2023-RAXON-01</span>
+<span class="material-symbols-outlined opacity-50">verified_user</span>
+</div>
+</div>
+</div>
+</main>
+<script>
+        const CIRC = 552.92; // SVG gauge circumference for r=88
+
+        async function api(url) {
+            const r = await fetch(url, {credentials: 'same-origin'});
+            if (r.status === 401 || r.status === 403) { window.location.href = '/login'; return null; }
+            if (!r.ok) { console.error(url, r.status); return null; }
+            return r.json();
+        }
+
+        function fmtN(n, d=2)  { return (+n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+        function fmtM(n) {
+            const v = +n;
+            if (v >= 1e9) return '$'+(v/1e9).toFixed(1)+'B';
+            if (v >= 1e6) return '$'+(v/1e6).toFixed(1)+'M';
+            if (v >= 1e3) return '$'+(v/1e3).toFixed(1)+'K';
+            return '$'+v.toFixed(0);
+        }
+        function el(id) { return document.getElementById(id); }
+        function set(id, v) { const e = el(id); if (e) e.textContent = v; }
+
+        async function loadSummary() {
+            const d = await api('/api/investor/summary');
+            if (!d) return;
+            const total    = (d.available||0) + (d.encumbered||0);
+            const totalVal = total * (d.token_price||1);
+            const alloc    = total > 0 ? (d.encumbered/total*100).toFixed(1) : '0.0';
+            const syncDate = d.last_sync_at ? new Date(d.last_sync_at).toISOString().replace('T',' ').slice(0,19)+' UTC' : '—';
+
+            set('data-mmf-value',     '$'+fmtN(totalVal));
+            set('data-last-sync',     'Last Sync: '+syncDate);
+            set('data-total-tokens',  fmtN(total));
+            set('data-value-holdings','$'+fmtN(totalVal));
+            set('data-alloc-pct',     alloc+'%');
+            set('data-unencumbered',  fmtN(d.available||0));
+            set('data-encumbered',    fmtN(d.encumbered||0));
+            set('data-utilization',   alloc+'%');
+            set('data-total-limit',   fmtM(total));
+            set('data-avail-limit',   fmtM(d.available||0));
+
+            const allocBar = el('data-alloc-bar');
+            if (allocBar) allocBar.style.width = alloc + '%';
+
+            const gauge = el('data-gauge-circle');
+            if (gauge) gauge.setAttribute('stroke-dashoffset', (CIRC*(1-alloc/100)).toFixed(2));
+        }
+
+        async function loadOperations() {
+            const d = await api('/api/investor/operations');
+            if (!d) return;
+            const tbody = el('approval-tbody');
+            if (!tbody) return;
+            const ops = d.operations || [];
+            if (!ops.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-lg py-xl text-center text-secondary font-body-sm">No pending transactions</td></tr>';
+                return;
+            }
+            tbody.innerHTML = ops.map(op => {
+                const p  = op.request_payload || {};
+                const sc = op.status === 'requested' ? 'bg-amber-100 text-amber-700 animate-pulse' : 'bg-surface-container text-secondary';
+                return `<tr class="hover:bg-surface-container-low transition-colors">
+                    <td class="px-lg py-md font-mono-data">${op.operation_id.slice(0,12)}...</td>
+                    <td class="px-lg py-md">${p.token_id||'DUM-MMF'}</td>
+                    <td class="px-lg py-md font-bold">$${fmtN(p.usd_value||0)}</td>
+                    <td class="px-lg py-md">${p.institution||op.requested_by||'—'}</td>
+                    <td class="px-lg py-md"><span class="status-chip ${sc}">${op.status}</span></td>
+                    <td class="px-lg py-md text-right"><button class="text-primary font-bold"><span class="material-symbols-outlined">visibility</span></button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function newTransaction() {
+            const amount = prompt('Token amount to encumber:');
+            if (!amount || isNaN(amount)) return;
+            const type   = (prompt('Type — ENCUMBRANCE or UNENCUMBRANCE:', 'ENCUMBRANCE') || '').toUpperCase();
+            if (type !== 'ENCUMBRANCE' && type !== 'UNENCUMBRANCE') { alert('Invalid type'); return; }
+            const r = await fetch('/api/investor/operations', {
+                method: 'POST', credentials: 'same-origin',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({type, amount: +amount, usd_value: +amount})
+            });
+            if (r.ok) { alert('Transaction submitted for custodian review.'); loadOperations(); }
+            else       { alert('Error: ' + await r.text()); }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([loadSummary(), loadOperations()]);
+
+            document.querySelector('[data-action="refresh"]')?.addEventListener('click', loadSummary);
+            document.querySelector('[data-action="new-tx"]')?.addEventListener('click', newTransaction);
+            document.querySelector('[data-action="export"]')?.addEventListener('click', () => {
+                window.location.href = '/api/custodian/export';
+            });
+        });
+    </script>
+
+
+</body></html>

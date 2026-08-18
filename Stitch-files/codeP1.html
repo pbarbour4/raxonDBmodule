@@ -1,0 +1,281 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Institutional Login | Raxon Bridge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary": "#516072",
+                    "outline": "#76777d",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-variant": "#e0e3e5",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c6c6cd",
+                    "surface-bright": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "primary": "#000000",
+                    "on-secondary-fixed-variant": "#39485a",
+                    "primary-container": "#131b2e",
+                    "on-background": "#191c1e",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#556477",
+                    "background": "#f7f9fb",
+                    "tertiary-container": "#271901",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2d",
+                    "surface-container-low": "#f2f4f6",
+                    "on-tertiary-fixed": "#271901",
+                    "secondary-container": "#d2e1f7",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary": "#000000",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-container": "#7c839b",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d8dadc",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed": "#d4e4fa",
+                    "secondary-fixed-dim": "#b9c8de",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "inverse-primary": "#bec6e0",
+                    "surface-tint": "#565e74",
+                    "surface-container": "#eceef0",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#98805d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "max-width": "1440px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "sm": "8px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Public Sans"],
+                    "display-lg": ["Public Sans"],
+                    "mono-data": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Public Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8FAFC;
+            color: #191C1E;
+            -webkit-font-smoothing: antialiased;
+        }
+        .login-card {
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.04);
+        }
+        .institutional-gradient {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            vertical-align: middle;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0F172A !important;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation Anchor (Non-functional shell as per instructions for Transactional Login) -->
+<header class="w-full h-16 px-margin-desktop flex items-center justify-between bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeqdlp9Rdu7ZjsZJ87gmWRhkemquZv74gTZwr5A0VYuaAhYGRQqkKv0teqO1vLLuOGkz3KdqbzpK80urCGAXhuiKQxGzNKIFi4Jkr-k1EVfUnKxbJ0RaL4eOF60y8oeXqr7hf0gXdUPLu2kX9de6Ow24Is4lVy2jkqYd-MstIqZ-eega4b7ZFebO8_4BUQxbPa4qnu_Wv5LPlivtRP1nPuO_VmVDXqhQOPgdJ1ALN28pCvC9X1gXRBDvEjWFiJfF4ORJQg69LGuuQ" alt="Raxon Logo" class="h-8 w-auto object-contain">
+<span class="font-display-lg text-headline-sm font-bold text-primary tracking-tight">Raxon Bridge</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-bold text-label-bold text-secondary uppercase tracking-widest">Dumastas Managed</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-md relative overflow-hidden">
+<!-- Subtle Background Pattern -->
+<div class="absolute inset-0 z-0 opacity-[0.03] pointer-events-none">
+<div class="h-full w-full" style="background-image: radial-gradient(#0F172A 1px, transparent 1px); background-size: 32px 32px;"></div>
+</div>
+<!-- Center Login Container -->
+<div class="relative z-10 w-full max-w-[440px]">
+<!-- Branding/Title Section -->
+<div class="text-center mb-xl">
+<h1 class="font-headline-md text-headline-md text-primary mb-xs">Institutional Access</h1>
+<p class="font-body-md text-secondary">Secure Portal for Digital Asset Management</p>
+</div>
+<!-- Main Login Card -->
+<div id="error-banner" class="hidden mb-md bg-error-container border border-error rounded p-sm flex items-start gap-sm">
+<span class="material-symbols-outlined text-error text-[20px]">error</span>
+<p id="error-message" class="text-body-sm text-on-error-container ml-sm"></p>
+</div>
+<div class="login-card rounded-lg p-xl space-y-lg">
+<form action="/auth/login" method="GET" class="space-y-md" id="loginForm">
+<!-- Identity Selection Notice -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-sm flex items-start gap-sm">
+<span class="material-symbols-outlined text-on-secondary-container text-[20px]">info</span>
+<p class="text-body-sm text-on-secondary-container">
+                            System will auto-detect institutional role based on your security key or domain.
+                        </p>
+</div>
+<!-- Fields -->
+<div class="space-y-sm">
+<label class="font-label-bold text-label-bold text-secondary uppercase tracking-wider" for="username">Username or Institutional Email</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">account_circle</span>
+<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="username" name="username" placeholder="name@institution.com" required="" type="text">
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<label class="font-label-bold text-label-bold text-secondary uppercase tracking-wider" for="password">Secure Key / Password</label>
+<a class="text-body-sm text-primary hover:underline font-medium" href="#">Reset Access?</a>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">vpn_key</span>
+<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="password" name="password" placeholder="••••••••••••" required="" type="password">
+</div>
+</div>
+<!-- MFA Toggle / Prompt (Visual Representation) -->
+<div class="pt-base">
+<div class="flex items-center gap-sm p-sm border border-dashed border-outline-variant rounded bg-surface-bright">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">vibration</span>
+<div>
+<p class="text-body-sm font-medium text-primary">Multi-Factor Authentication</p>
+<p class="text-[11px] text-secondary">Token prompt will follow login verification</p>
+</div>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-4 bg-primary text-on-primary font-label-bold text-label-bold uppercase tracking-widest rounded hover:bg-primary-container transition-colors flex items-center justify-center gap-sm" type="submit">
+<span class="">Secure Authorize</span>
+<span class="material-symbols-outlined text-[18px]">lock_open</span>
+</button>
+</form>
+<!-- Help Link -->
+<div class="text-center pt-md border-t border-outline-variant">
+<p class="text-body-sm text-secondary">Need technical assistance? <a class="text-primary font-medium hover:underline" href="#">Contact Support</a></p>
+</div>
+</div>
+<!-- Security Trust Badges -->
+<div class="mt-xl grid grid-cols-3 gap-sm items-center">
+<div class="flex flex-col items-center opacity-60">
+<span class="material-symbols-outlined text-[32px] text-secondary">verified_user</span>
+<span class="text-[10px] font-label-bold text-secondary uppercase mt-xs">SOC2 Type II</span>
+</div>
+<div class="flex flex-col items-center opacity-60">
+<span class="material-symbols-outlined text-[32px] text-secondary">encrypted</span>
+<span class="text-[10px] font-label-bold text-secondary uppercase mt-xs">AES-256 Bit</span>
+</div>
+<div class="flex flex-col items-center opacity-60">
+<span class="material-symbols-outlined text-[32px] text-secondary">shield</span>
+<span class="text-[10px] font-label-bold text-secondary uppercase mt-xs">FIPS 140-2</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Global Footer -->
+<footer class="w-full py-md px-margin-desktop bg-surface-container-low border-t border-outline-variant mt-auto">
+<div class="max-w-max-width mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-md text-secondary">
+<span class="font-label-bold text-label-bold">© 2024 Dumastas Institutional</span>
+<span class="text-outline-variant">|</span>
+<a class="text-body-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-body-sm hover:text-primary transition-colors" href="#">Audit &amp; Compliance</a>
+</div>
+<div class="flex items-center gap-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]">language</span>
+<span class="text-body-sm font-medium">Regional Access: US-EAST-1 (Secure)</span>
+</div>
+</div>
+</footer>
+<!-- Interactive Micro-interactions -->
+<script>
+        const ERROR_MESSAGES = {
+            oidc_not_configured: 'Authentication service is not configured. Contact your administrator.',
+            not_provisioned:     'Your account is not provisioned for this platform. Contact Dumastas support.',
+            token_exchange:      'Authentication failed. Please try again.',
+            token_invalid:       'Security token was invalid. Please try again.',
+            invalid_state:       'Session expired. Please try again.',
+            db_error:            'A system error occurred. Please contact support.',
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Surface OIDC error codes passed back as query params from /auth/* handlers.
+            const error = new URLSearchParams(window.location.search).get('error');
+            if (error) {
+                const banner = document.getElementById('error-banner');
+                const msg    = document.getElementById('error-message');
+                msg.textContent = ERROR_MESSAGES[error] || ('Login failed: ' + error);
+                banner.classList.remove('hidden');
+            }
+
+            // Visual spinner while the browser navigates to the OIDC provider.
+            const form = document.getElementById('loginForm');
+            const btn  = form.querySelector('button[type="submit"]');
+            form.addEventListener('submit', () => {
+                btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+                btn.disabled = true;
+            });
+
+            // Icon colour on focus
+            document.querySelectorAll('input').forEach(input => {
+                const parentIcon = () => input.parentElement.querySelector('.material-symbols-outlined');
+                input.addEventListener('focus', () => { const ic = parentIcon(); if (ic) ic.style.color = '#0F172A'; });
+                input.addEventListener('blur',  () => { const ic = parentIcon(); if (ic) ic.style.color = '#94A3B8'; });
+            });
+        });
+    </script>
+
+
+</body></html>

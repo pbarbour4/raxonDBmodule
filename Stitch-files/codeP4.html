@@ -1,0 +1,425 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dumastas | Custodial Approval Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary": "#516072",
+                        "outline": "#76777d",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "tertiary-fixed": "#fcdeb5",
+                        "on-surface-variant": "#45464d",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c6c6cd",
+                        "surface-bright": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "primary": "#000000",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "primary-container": "#131b2e",
+                        "on-background": "#191c1e",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#556477",
+                        "background": "#f7f9fb",
+                        "tertiary-container": "#271901",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "surface-container-low": "#f2f4f6",
+                        "on-tertiary-fixed": "#271901",
+                        "secondary-container": "#d2e1f7",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary": "#000000",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary-container": "#7c839b",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dadc",
+                        "on-primary-fixed": "#131b2e",
+                        "secondary-fixed": "#d4e4fa",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "inverse-primary": "#bec6e0",
+                        "surface-tint": "#565e74",
+                        "surface-container": "#eceef0",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#98805d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "max-width": "1440px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-md": ["Public Sans"],
+                        "display-lg": ["Public Sans"],
+                        "mono-data": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Top Navigation Anchor -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop h-16 max-w-max-width mx-auto">
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-sm">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR3Q2ewKsEIil2t7N9FYPqSBZ8a8llCI0hNNAkwOiTn0So5CHpvfUGIuNcXAjg9GCQkHCDtgqs1SNQj31vq7BzdNkp3o7mKS153Cqz8QI0Yd-79VCDWVUfiPTcKYj22eO4h3WehN6oNg_yIpKSDsBSzTBNBsETpNCz0B-gI-S84jQpShmQ-MXb23i-PqSpxbdkGIY6EjoxB1iDVzPPUn81Gn4Y2gmK--bUtqJXDSmJHzQl7sk_MJ6w82x0lk0NygbiMZQsBUzKRco" alt="Raxon Bridge Logo" class="h-8 w-8 object-contain">
+  <span class="font-display-lg text-display-lg font-bold text-primary dark:text-inverse-primary">Raxon Bridge</span>
+</div>
+<nav class="hidden md:flex gap-md items-center">
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed-dim transition-colors font-label-bold text-label-bold cursor-pointer active:opacity-80" href="#">Dashboard</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed-dim transition-colors font-label-bold text-label-bold cursor-pointer active:opacity-80" href="#">History</a>
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary font-label-bold text-label-bold cursor-pointer active:opacity-80" href="#">Queue</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">shield_lock</button>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="Institutional manager profile picture in a high-key professional studio setting. The subject wears a sharp tailored navy blazer, looking directly at the camera with a confident and trustworthy expression. The lighting is crisp and even, highlighting the clean minimalist background consistent with an elite financial office aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKww0p-4Bygkli-O36iALGwgxXzbU13OZ66KabQVd8R_8E6jmiJwtD8S8Fy6jfix5sWtDw8YkpjtZIuxe2miBuTzNfCC4Li4G0mA_kijUH-PsV8JhosrDAn61B2nrq0waP9cqPnb2rPRFGW0ZIDsocKPID59pYxL25BjXzDlW2Cn3fpTq8SYX2-wmXtDOBlPW0y4Dk845cilqkTNxMyZM1y139_5pPHJeE5tAhLYdBma-Er_eqZDH_Lr6ndze6tt1rTdc2AfHjD3I">
+<span class="font-label-bold text-label-bold text-primary">Custodian Admin</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen pt-16">
+<!-- Sidebar Anchor -->
+<aside class="bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant dark:border-outline flex flex-col h-[calc(100vh-64px)] p-md gap-sm fixed left-0 top-16 w-64 hidden lg:flex">
+<div class="px-md py-sm">
+<p class="font-label-bold text-label-bold text-outline uppercase tracking-widest">Asset Management</p>
+</div>
+<nav class="flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md hover:bg-surface-container-highest transition-all rounded-lg text-on-surface-variant scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-bold text-label-bold">Overview</span>
+</a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-lg scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-label-bold text-label-bold">Transactions</span>
+</a>
+<a class="flex items-center gap-md p-md hover:bg-surface-container-highest transition-all rounded-lg text-on-surface-variant scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">currency_exchange</span>
+<span class="font-label-bold text-label-bold">Borrowing</span>
+</a>
+<a class="flex items-center gap-md p-md hover:bg-surface-container-highest transition-all rounded-lg text-on-surface-variant scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-bold text-label-bold">Security</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md hover:bg-surface-container-highest transition-all rounded-lg text-on-surface-variant scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold">Settings</span>
+</a>
+<a class="flex items-center gap-md p-md hover:bg-surface-container-highest transition-all rounded-lg text-on-surface-variant scale-95 active:scale-100" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold">Audit Log</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 lg:ml-64 p-margin-desktop max-w-max-width mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary">Approval Queue</h1>
+<p class="font-body-md text-body-md text-secondary">Review and authorize token encumbrance requests from institutional participants.</p>
+</div>
+<div class="flex gap-sm">
+<div class="flex items-center bg-surface border border-outline-variant rounded px-md py-sm">
+<span class="material-symbols-outlined text-secondary mr-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm w-48" placeholder="Search investor name..." type="text">
+</div>
+<button class="bg-surface border border-outline-variant text-primary px-lg py-sm font-label-bold text-label-bold hover:bg-surface-container-low transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filter
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-xl">
+<div class="bg-surface border border-outline-variant p-lg flex flex-col gap-base">
+<span class="font-label-bold text-label-bold text-secondary uppercase">Pending Approval</span>
+<span id="data-pending-count" class="font-display-lg text-display-lg font-bold text-primary">14</span>
+<div class="flex items-center text-[10px] font-bold text-[#10B981] gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="">24% increase from yesterday</span>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-lg flex flex-col gap-base">
+<span class="font-label-bold text-label-bold text-secondary uppercase">Encumbered Volume</span>
+<span id="data-enc-volume" class="font-display-lg text-display-lg font-bold text-primary">$4.2M</span>
+<span class="text-body-sm font-body-sm text-secondary">Across 8 asset classes</span>
+</div>
+<div class="bg-surface border border-outline-variant p-lg flex flex-col gap-base">
+<span class="font-label-bold text-label-bold text-secondary uppercase">Avg Response Time</span>
+<span id="data-avg-response" class="font-display-lg text-display-lg font-bold text-primary">1.2h</span>
+<span class="text-body-sm font-body-sm text-secondary">Institutional SLA: 4.0h</span>
+</div>
+<div class="bg-surface border border-outline-variant p-lg flex flex-col gap-base bg-primary-container">
+<span class="font-label-bold text-label-bold text-on-primary-container uppercase">Security Status</span>
+<div class="flex items-center gap-sm mt-sm">
+<span class="material-symbols-outlined text-[#10B981]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-headline-sm text-headline-sm text-white">Fully Hardened</span>
+</div>
+</div>
+</div>
+<!-- Main Queue Table Card -->
+<div class="bg-surface border border-outline-variant overflow-hidden">
+<div class="p-lg border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<h2 class="font-headline-sm text-headline-sm text-primary">Transaction Requests</h2>
+<div class="flex gap-base">
+<button class="p-sm hover:bg-surface-container-highest transition-colors rounded">
+<span class="material-symbols-outlined text-secondary">refresh</span>
+</button>
+<button class="p-sm hover:bg-surface-container-highest transition-colors rounded">
+<span class="material-symbols-outlined text-secondary">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="p-lg font-label-bold text-label-bold text-outline">INVESTOR NAME</th>
+<th class="p-lg font-label-bold text-label-bold text-outline">ASSET / AMOUNT</th>
+<th class="p-lg font-label-bold text-label-bold text-outline">TX TYPE</th>
+<th class="p-lg font-label-bold text-label-bold text-outline">REQUEST DATE</th>
+<th class="p-lg font-label-bold text-label-bold text-outline text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody id="queue-tbody" class="divide-y divide-outline-variant">
+</tbody>
+</table>
+</div>
+<div class="p-lg border-t border-outline-variant bg-surface flex justify-between items-center">
+<span id="queue-count" class="font-body-sm text-body-sm text-secondary">Showing 0 of 0 pending requests</span>
+<div id="queue-pagination" class="flex gap-sm"></div>
+</div>
+</div>
+<!-- Transaction History Card -->
+<section class="mt-xl">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">System Audit Logs</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Recent Activity Mini Feed -->
+<div class="lg:col-span-2 bg-white border border-outline-variant rounded p-lg">
+<div id="audit-entries" class="space-y-md">
+<!-- Audit entries populated by JS -->
+</div>
+</div>
+<!-- Side Action Card -->
+<div class="bg-primary-container p-lg flex flex-col justify-between text-white overflow-hidden relative group">
+
+<div class="relative z-10">
+<span class="font-label-bold text-label-bold uppercase text-on-primary-container">Quick Action</span>
+<h4 class="font-headline-sm text-headline-sm mt-sm mb-lg">Export Compliance Report</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container mb-xl">Generate a cryptographically signed CSV for regulatory filing.</p>
+</div>
+<button data-action="export" class="relative z-10 w-full bg-white text-primary font-label-bold text-label-bold py-md flex items-center justify-center gap-sm hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                            GENERATE SIGNED REPORT
+                        </button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        async function api(url, opts) {
+            const r = await fetch(url, {credentials:'same-origin',...opts});
+            if (r.status===401||r.status===403) { window.location.href='/login'; return null; }
+            if (!r.ok) { console.error(url,r.status); return null; }
+            return r.json();
+        }
+        function fmtN(n,d=2) { return (+n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+        function fmtM(n) {
+            const v=+n;
+            if(v>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+            if(v>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
+            if(v>=1e3) return '$'+(v/1e3).toFixed(1)+'K';
+            return '$'+v.toFixed(0);
+        }
+        function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+        function relTime(ts){
+            const d=Math.floor((Date.now()-new Date(ts))/1000);
+            if(d<60)  return d+'s ago';
+            if(d<3600) return Math.floor(d/60)+'m ago';
+            return Math.floor(d/3600)+'h ago';
+        }
+
+        async function loadStats() {
+            const d = await api('/api/custodian/stats');
+            if (!d) return;
+            set('data-pending-count', d.pending_count||0);
+            set('data-enc-volume',    fmtM(d.encumbered_volume_usd||0));
+            set('data-avg-response',  (d.avg_response_hours||0).toFixed(1)+'h');
+        }
+
+        let qPage = 1;
+        const PAGE_SIZE = 10;
+
+        async function loadQueue(page) {
+            qPage = page||1;
+            const d = await api('/api/custodian/queue?page='+qPage+'&limit='+PAGE_SIZE);
+            if (!d) return;
+            const ops   = d.operations||[];
+            const total = d.total||0;
+            const tbody = document.getElementById('queue-tbody');
+
+            set('queue-count', 'Showing '+(ops.length)+' of '+total+' pending requests');
+
+            // Pagination buttons
+            const pag = document.getElementById('queue-pagination');
+            const pages = Math.max(1, Math.ceil(total/PAGE_SIZE));
+            pag.innerHTML = `
+                <button onclick="loadQueue(${Math.max(1,qPage-1)})" class="w-8 h-8 flex items-center justify-center border border-outline-variant hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                ${Array.from({length:Math.min(pages,5)},(_,i)=>i+1).map(p=>`
+                <button onclick="loadQueue(${p})" class="w-8 h-8 flex items-center justify-center border border-outline-variant ${p===qPage?'bg-primary text-white':'hover:bg-surface-container-low'} font-label-bold text-label-bold">${p}</button>`).join('')}
+                <button onclick="loadQueue(${Math.min(pages,qPage+1)})" class="w-8 h-8 flex items-center justify-center border border-outline-variant hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]">chevron_right</span></button>`;
+
+            if (!ops.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-lg text-center text-secondary">No pending requests</td></tr>';
+                return;
+            }
+            tbody.innerHTML = ops.map(op => {
+                const p    = op.request_payload||{};
+                const init = (p.institution||'?').slice(0,2).toUpperCase();
+                const d    = new Date(op.created_at);
+                const dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+                const timeStr = d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+                const txCls   = op.type==='ENCUMBRANCE'
+                    ? 'inline-flex items-center px-sm py-xs bg-[#10B981]/10 text-[#10B981] font-label-bold text-label-bold uppercase'
+                    : 'inline-flex items-center px-sm py-xs bg-[#D97706]/10 text-[#D97706] font-label-bold text-label-bold uppercase';
+                return `<tr class="hover:bg-surface-container-low transition-colors group" data-op-id="${op.operation_id}">
+                    <td class="p-lg"><div class="flex items-center gap-md">
+                        <div class="w-10 h-10 bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-bold">${init}</div>
+                        <div class="flex flex-col">
+                            <span class="font-body-md text-primary font-semibold">${p.institution||'Unknown'}</span>
+                            <span class="font-mono-data text-mono-data text-secondary">${op.requested_by||'—'}</span>
+                        </div></div></td>
+                    <td class="p-lg"><div class="flex flex-col">
+                        <span class="font-headline-sm text-primary">${fmtN(p.amount||0,0)} DUM</span>
+                        <span class="font-body-sm text-secondary">≈ $${fmtN(p.usd_value||0)} USD</span>
+                    </div></td>
+                    <td class="p-lg"><span class="${txCls}">${op.type}</span></td>
+                    <td class="p-lg"><div class="flex flex-col">
+                        <span class="font-body-md text-primary">${dateStr}</span>
+                        <span class="font-body-sm text-secondary">${timeStr}</span>
+                    </div></td>
+                    <td class="p-lg text-right"><div class="flex justify-end gap-sm">
+                        <button onclick="handleReject('${op.operation_id}', this)" class="px-md py-sm bg-[#ba1a1a] text-white font-label-bold text-label-bold hover:bg-red-800 transition-colors">REJECT</button>
+                        <button onclick="handleApprove('${op.operation_id}', this)" class="px-md py-sm bg-primary text-white font-label-bold text-label-bold hover:bg-slate-800 transition-colors">APPROVE</button>
+                    </div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function handleApprove(opID, btn) {
+            btn.disabled = true; btn.textContent = '…';
+            const d = await api('/api/custodian/operations/'+opID+'/approve', {method:'POST'});
+            if (d) { loadQueue(qPage); loadStats(); loadAuditLog(); }
+            else { btn.disabled=false; btn.textContent='APPROVE'; }
+        }
+
+        async function handleReject(opID, btn) {
+            const reason = prompt('Reason for rejection:');
+            if (!reason) return;
+            btn.disabled = true; btn.textContent = '…';
+            const d = await api('/api/custodian/operations/'+opID+'/reject', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({reason})
+            });
+            if (d) { loadQueue(qPage); loadStats(); loadAuditLog(); }
+            else { btn.disabled=false; btn.textContent='REJECT'; }
+        }
+
+        async function loadAuditLog() {
+            const d = await api('/api/custodian/audit-log');
+            if (!d) return;
+            const container = document.getElementById('audit-entries');
+            if (!container) return;
+            const entries = (d.entries||[]).slice(0,10);
+            container.innerHTML = entries.map(e => {
+                const note    = (e.after&&e.after.note) || (e.after&&e.after.status) || e.change_type;
+                const isGood  = !note.toLowerCase().includes('cancel') && !note.toLowerCase().includes('reject');
+                const dotCls  = isGood ? 'bg-[#10B981]' : 'bg-[#ba1a1a]';
+                return `<div class="flex items-start gap-md pb-md border-b border-outline-variant last:border-0 last:pb-0">
+                    <div class="w-2 h-2 rounded-full ${dotCls} mt-2 flex-shrink-0"></div>
+                    <div class="flex-1">
+                        <p class="font-body-md text-primary">${note}</p>
+                        <span class="text-body-sm text-secondary">${relTime(e.timestamp)}</span>
+                    </div></div>`;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([loadStats(), loadQueue(1), loadAuditLog()]);
+            document.querySelector('[data-action="export"]')?.addEventListener('click', () => {
+                window.location.href = '/api/custodian/export';
+            });
+        });
+    </script>
+
+
+</body></html>
