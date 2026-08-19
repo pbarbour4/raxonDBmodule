@@ -173,8 +173,16 @@
 <label class="font-label-bold text-label-bold text-secondary uppercase tracking-wider" for="username">Username or Institutional Email</label>
 <div class="relative">
 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">account_circle</span>
-<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="username" name="username" placeholder="name@institution.com" required="" type="text">
+<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="username" name="username" placeholder="name@institution.com" type="text">
 </div>
+</div>
+<div class="space-y-sm">
+<label class="font-label-bold text-label-bold text-secondary uppercase tracking-wider" for="role">Development Test Role</label>
+<select class="w-full px-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="role" name="role">
+<option value="investor">Investor</option>
+<option value="lender">Lender</option>
+<option value="custodian">Custodian</option>
+</select>
 </div>
 <div class="space-y-sm">
 <div class="flex justify-between items-center">
@@ -183,7 +191,7 @@
 </div>
 <div class="relative">
 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">vpn_key</span>
-<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="password" name="password" placeholder="••••••••••••" required="" type="password">
+<input class="w-full pl-10 pr-md py-3 rounded border border-outline-variant font-body-md focus:ring-0 transition-all" id="password" name="password" placeholder="••••••••••••" type="password">
 </div>
 </div>
 <!-- MFA Toggle / Prompt (Visual Representation) -->

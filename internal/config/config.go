@@ -20,6 +20,9 @@ type Config struct {
 	OIDCRedirectURL  string
 	SessionSecret    string
 	StaticDir        string
+	AuthMode         string
+	Environment      string
+	SessionTTL       string
 }
 
 func Load() Config {
@@ -33,6 +36,9 @@ func Load() Config {
 		OIDCRedirectURL:  getEnv("RAXON_OIDC_REDIRECT_URL", "http://localhost:8080/auth/callback"),
 		SessionSecret:    getEnv("RAXON_SESSION_SECRET", defaultSessionSecret),
 		StaticDir:        getEnv("RAXON_STATIC_DIR", "Stitch-files"),
+		AuthMode:         getEnv("RAXON_AUTH_MODE", "oidc"),
+		Environment:      getEnv("RAXON_ENV", "development"),
+		SessionTTL:       getEnv("RAXON_SESSION_TTL", "8h"),
 	}
 }
 

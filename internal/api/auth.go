@@ -6,8 +6,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
+	"time"
 
 	"raxonplatform/internal/db/repository"
 
@@ -47,6 +49,10 @@ func (s *Server) initOIDC(ctx context.Context) (*oidcProvider, error) {
 
 // handleLogin initiates the OIDC authorization code flow.
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
+	if s.cfg.AuthMode == "dev" {
+		s.handleDevLogin(w, r)
+		return
+	}
 	// Show the login page; the Secure Authorize button posts here to kick off OIDC.
 	// If OIDC is not configured, surface a clear error rather than panicking.
 	prov, err := s.initOIDC(r.Context())
@@ -143,8 +149,15 @@ func (s *Server) handleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login?error=db_error", http.StatusSeeOther)
 		return
 	}
+	session, err := s.repo.CreateSession(r.Context(), upserted.ID, "oidc", clientIP(r), r.UserAgent(), s.sessionTTL())
+	if err != nil {
+		log.Printf("create OIDC session failed: %v", err)
+		http.Redirect(w, r, "/login?error=db_error", http.StatusSeeOther)
+		return
+	}
 
 	if err := s.setSession(w, SessionData{
+		SessionID:   session.ID,
 		UserID:      upserted.ID,
 		Email:       upserted.Email,
 		Role:        upserted.Role,
@@ -158,6 +171,9 @@ func (s *Server) handleCallback(w http.ResponseWriter, r *http.Request) {
 
 // handleLogout clears the session and redirects to the login page.
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
+	if sess, err := s.decodeSessionCookie(r); err == nil {
+		_ = s.repo.RevokeSession(r.Context(), sess.SessionID)
+	}
 	s.clearSession(w)
 	// Optionally redirect to the OIDC provider's logout endpoint if configured.
 	if s.cfg.OIDCIssuerURL != "" {
@@ -168,6 +184,68 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+func (s *Server) handleDevLogin(w http.ResponseWriter, r *http.Request) {
+	if s.cfg.AuthMode != "dev" || s.cfg.Environment == "production" {
+		http.Error(w, "development login is disabled", http.StatusNotFound)
+		return
+	}
+	role := r.FormValue("role")
+	if role != "investor" && role != "lender" && role != "custodian" {
+		_ = s.repo.RecordLoginAudit(r.Context(), "", "", "", "dev", "failure", "invalid_role", clientIP(r), r.UserAgent())
+		http.Redirect(w, r, "/login?error=invalid_role", http.StatusSeeOther)
+		return
+	}
+	user, err := s.repo.GetDevelopmentUser(r.Context(), role)
+	if err != nil || user == nil {
+		_ = s.repo.RecordLoginAudit(r.Context(), "", "", role, "dev", "failure", "test_user_not_found", clientIP(r), r.UserAgent())
+		http.Redirect(w, r, "/login?error=test_user_not_found", http.StatusSeeOther)
+		return
+	}
+	session, err := s.repo.CreateSession(r.Context(), user.ID, "dev", clientIP(r), r.UserAgent(), s.sessionTTL())
+	if err != nil {
+		_ = s.repo.RecordLoginAudit(r.Context(), user.ID, user.Email, user.Role, "dev", "failure", "session_creation_failed", clientIP(r), r.UserAgent())
+		http.Redirect(w, r, "/login?error=db_error", http.StatusSeeOther)
+		return
+	}
+	if err := s.repo.RecordLoginAudit(r.Context(), user.ID, user.Email, user.Role, "dev", "success", "", clientIP(r), r.UserAgent()); err != nil {
+		http.Error(w, "audit error", http.StatusInternalServerError)
+		return
+	}
+	if err := s.setSession(w, SessionData{SessionID: session.ID, UserID: user.ID, Email: user.Email, Role: user.Role, Institution: user.InstitutionName}); err != nil {
+		http.Error(w, "session error", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (s *Server) sessionTTL() time.Duration {
+	ttl, err := time.ParseDuration(s.cfg.SessionTTL)
+	if err != nil || ttl <= 0 {
+		return 8 * time.Hour
+	}
+	return ttl
+}
+
+func clientIP(r *http.Request) string {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err == nil {
+		return host
+	}
+	return r.RemoteAddr
+}
+
+func (s *Server) decodeSessionCookie(r *http.Request) (SessionData, error) {
+	cookie, err := r.Cookie("raxon_session")
+	if err != nil {
+		return SessionData{}, err
+	}
+	var sess SessionData
+	if err := s.sc.Decode("raxon_session", cookie.Value, &sess); err != nil {
+		return SessionData{}, err
+	}
+	return sess, nil
 }
 
 func randomState() (string, error) {

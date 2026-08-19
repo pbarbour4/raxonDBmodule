@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -10,6 +11,7 @@ type contextKey string
 const sessionCtxKey contextKey = "session"
 
 type SessionData struct {
+	SessionID   string
 	UserID      string
 	Email       string
 	Role        string
@@ -27,6 +29,7 @@ func (s *Server) requireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sess, err := s.decodeSession(r)
 		if err != nil {
+			s.clearSession(w)
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
@@ -60,6 +63,18 @@ func (s *Server) decodeSession(r *http.Request) (SessionData, error) {
 	if err := s.sc.Decode("raxon_session", cookie.Value, &sess); err != nil {
 		return SessionData{}, err
 	}
+	if sess.SessionID == "" {
+		return SessionData{}, fmt.Errorf("session id is missing")
+	}
+	record, err := s.repo.GetActiveSession(r.Context(), sess.SessionID)
+	if err != nil {
+		return SessionData{}, err
+	}
+	if record.UserID != sess.UserID || record.Role != sess.Role {
+		return SessionData{}, fmt.Errorf("session claims do not match database")
+	}
+	sess.Email = record.Email
+	sess.Institution = record.InstitutionName
 	return sess, nil
 }
 

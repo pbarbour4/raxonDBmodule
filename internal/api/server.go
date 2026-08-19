@@ -26,6 +26,9 @@ type Server struct {
 // New constructs and wires the server. Returns an error if the session secret is
 // the default placeholder so operators know to set RAXON_SESSION_SECRET.
 func New(repo *repository.Repository, cfg config.Config) (*Server, error) {
+	if cfg.AuthMode == "dev" && cfg.Environment == "production" {
+		return nil, fmt.Errorf("development authentication is disabled in production")
+	}
 	if cfg.SessionSecret == "change-this-to-a-32-byte-secret!" {
 		log.Println("WARNING: using default session secret — set RAXON_SESSION_SECRET in production")
 	}
@@ -63,6 +66,7 @@ func (s *Server) routes() {
 
 	// Auth
 	r.Get("/auth/login", http.HandlerFunc(s.handleLogin))
+	r.Post("/auth/dev-login", http.HandlerFunc(s.handleDevLogin))
 	r.Get("/auth/callback", http.HandlerFunc(s.handleCallback))
 	r.Get("/auth/logout", http.HandlerFunc(s.handleLogout))
 
