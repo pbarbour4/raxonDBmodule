@@ -1,0 +1,65 @@
+version: "3.9"
+
+# 3 interactive fabriccli containers, one per test identity. Bring up after the network is
+# running, the channel is created, and register-identities.sh has produced network/wallets/*:
+#   docker compose -f docker-compose.yml -f network/docker-compose.fabric.yml \
+#     -f network/docker-compose.clients.yml up -d
+# Then attach to each in its own terminal:
+#   docker attach raxon-cli-custodian   (or docker exec -it raxon-cli-custodian /fabriccli)
+
+networks:
+  raxon-fabric:
+    external: true
+
+x-fabriccli-common: &fabriccli-common
+  build:
+    context: .
+    dockerfile: Dockerfile.fabriccli
+  stdin_open: true
+  tty: true
+  networks:
+    - raxon-fabric
+
+x-fabriccli-env: &fabriccli-env
+  RAXON_CHANNEL_NAME: tokenization-channel
+  RAXON_FABRIC_PEER_ENDPOINT: peer0.org1.example.com:7051
+  RAXON_FABRIC_GATEWAY_PEER: peer0.org1.example.com
+  RAXON_FABRIC_MSP_ID: Org1MSP
+  RAXON_FABRIC_CHAINCODE_NAME: tokenization
+  RAXON_FABRIC_TLS_CA_CERT_PATH: /wallet/tls-ca-cert.pem
+  RAXON_FABRIC_CERT_PATH: /wallet/cert.pem
+  RAXON_FABRIC_KEY_PATH: /wallet/key.pem
+
+services:
+  raxon-cli-custodian:
+    <<: *fabriccli-common
+    container_name: raxon-cli-custodian
+    environment:
+      <<: *fabriccli-env
+      RAXON_IDENTITY_LABEL: custodian1
+    volumes:
+      - ./network/wallets/custodian1/cert.pem:/wallet/cert.pem:ro
+      - ./network/wallets/custodian1/key.pem:/wallet/key.pem:ro
+      - ./network/wallets/tls-ca-cert.pem:/wallet/tls-ca-cert.pem:ro
+
+  raxon-cli-investor1:
+    <<: *fabriccli-common
+    container_name: raxon-cli-investor1
+    environment:
+      <<: *fabriccli-env
+      RAXON_IDENTITY_LABEL: investor1
+    volumes:
+      - ./network/wallets/investor1/cert.pem:/wallet/cert.pem:ro
+      - ./network/wallets/investor1/key.pem:/wallet/key.pem:ro
+      - ./network/wallets/tls-ca-cert.pem:/wallet/tls-ca-cert.pem:ro
+
+  raxon-cli-investor2:
+    <<: *fabriccli-common
+    container_name: raxon-cli-investor2
+    environment:
+      <<: *fabriccli-env
+      RAXON_IDENTITY_LABEL: investor2
+    volumes:
+      - ./network/wallets/investor2/cert.pem:/wallet/cert.pem:ro
+      - ./network/wallets/investor2/key.pem:/wallet/key.pem:ro
+      - ./network/wallets/tls-ca-cert.pem:/wallet/tls-ca-cert.pem:ro

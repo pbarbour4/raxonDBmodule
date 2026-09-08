@@ -3,3 +3,7 @@ coverage.out
 *.log
 .env
 .vscode/
+*.exe
+network/crypto-config/
+network/wallets/
+network/channel-artifacts/

@@ -27,15 +27,15 @@ func main() {
 	defer dbPool.Close()
 
 	repo := repository.New(dbPool)
-	processor := pipeline.NewProcessor(repo)
+	processor := pipeline.NewProcessor(repo, cfg)
 	reconciler := reconcile.New(repo)
 
 	log.Printf("starting epl service channel=%s", cfg.ChannelName)
-	if err := processor.Start(ctx, cfg.ChannelName); err != nil {
-		log.Fatalf("processor exited with error: %v", err)
-	}
-
 	if err := reconciler.RunOnce(ctx, cfg.ChannelName); err != nil {
 		log.Printf("reconciler warning: %v", err)
+	}
+
+	if err := processor.Start(ctx, cfg.ChannelName); err != nil {
+		log.Fatalf("processor exited with error: %v", err)
 	}
 }

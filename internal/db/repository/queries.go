@@ -371,6 +371,113 @@ func (r *Repository) GetAuditTrail(ctx context.Context, limit int) ([]AuditEntry
 	return out, rows.Err()
 }
 
+// ── Chain event projections (fed by the EPL processor) ───────────────────────
+
+// UpsertBalanceDelta applies a signed change to an owner's available/encumbered balance,
+// creating the row if it doesn't exist yet.
+func (r *Repository) UpsertBalanceDelta(ctx context.Context, ownerID, tokenID string, availableDelta, encumberedDelta float64, blockHeight int64) error {
+	_, err := r.pool.Exec(ctx, `
+		INSERT INTO balances (owner_id, token_id, available, encumbered, version, last_updated_block)
+		VALUES ($1, $2, $3, $4, 1, $5)
+		ON CONFLICT (owner_id, token_id) DO UPDATE SET
+			available          = balances.available + EXCLUDED.available,
+			encumbered         = balances.encumbered + EXCLUDED.encumbered,
+			version            = balances.version + 1,
+			last_updated_block = EXCLUDED.last_updated_block
+	`, ownerID, tokenID, availableDelta, encumberedDelta, blockHeight)
+	if err != nil {
+		return fmt.Errorf("upsert balance delta: %w", err)
+	}
+	return nil
+}
+
+// UpsertTokenPrice records the custodian-supplied NAV for tokenID.
+func (r *Repository) UpsertTokenPrice(ctx context.Context, tokenID string, price, changePct float64) error {
+	_, err := r.pool.Exec(ctx, `
+		INSERT INTO token_prices (token_id, price, change_pct) VALUES ($1, $2, $3)
+		ON CONFLICT (token_id) DO UPDATE SET
+			price      = EXCLUDED.price,
+			change_pct = EXCLUDED.change_pct,
+			updated_at = NOW()
+	`, tokenID, price, changePct)
+	if err != nil {
+		return fmt.Errorf("upsert token price: %w", err)
+	}
+	return nil
+}
+
+// InsertOperationFromEvent records a chain-originated request as an operation row.
+func (r *Repository) InsertOperationFromEvent(ctx context.Context, operationID, opType, status, requestedBy string, payload map[string]any, txID string) error {
+	payloadJSON, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal operation payload: %w", err)
+	}
+	_, err = r.pool.Exec(ctx, `
+		INSERT INTO operations (operation_id, type, status, requested_by, request_payload, related_tx_id)
+		VALUES ($1, $2, $3, $4, $5, $6)
+		ON CONFLICT (operation_id) DO NOTHING
+	`, operationID, opType, status, requestedBy, payloadJSON, txID)
+	if err != nil {
+		return fmt.Errorf("insert operation from event: %w", err)
+	}
+	return nil
+}
+
+// SetOperationStatus overwrites an operation's status to reflect the on-chain outcome.
+func (r *Repository) SetOperationStatus(ctx context.Context, operationID, status string) error {
+	_, err := r.pool.Exec(ctx, `
+		UPDATE operations SET status = $2, completed_at = NOW() WHERE operation_id = $1
+	`, operationID, status)
+	if err != nil {
+		return fmt.Errorf("set operation status: %w", err)
+	}
+	return nil
+}
+
+// InsertEncumbrance records a newly active encumbrance created by an approved request.
+func (r *Repository) InsertEncumbrance(ctx context.Context, ownerID, tokenID string, amount float64, relatedOperationID string, createdBlock int64) error {
+	_, err := r.pool.Exec(ctx, `
+		INSERT INTO encumbrances (owner_id, token_id, amount, status, related_operation_id, created_block)
+		VALUES ($1, $2, $3, 'active', $4, $5)
+	`, ownerID, tokenID, amount, relatedOperationID, createdBlock)
+	if err != nil {
+		return fmt.Errorf("insert encumbrance: %w", err)
+	}
+	return nil
+}
+
+// ReleaseEncumbrance marks the most recent active encumbrance tied to relatedOperationID as released.
+func (r *Repository) ReleaseEncumbrance(ctx context.Context, relatedOperationID string, releasedBlock int64) error {
+	_, err := r.pool.Exec(ctx, `
+		UPDATE encumbrances SET status = 'released', released_block = $2
+		WHERE related_operation_id = $1 AND status = 'active'
+	`, relatedOperationID, releasedBlock)
+	if err != nil {
+		return fmt.Errorf("release encumbrance: %w", err)
+	}
+	return nil
+}
+
+// InsertAuditTrail records a before/after state-change entry tied to a chain transaction.
+func (r *Repository) InsertAuditTrail(ctx context.Context, entityType, entityID, changeType string, before, after any, txID string, blockHeight int64) error {
+	beforeJSON, err := json.Marshal(before)
+	if err != nil {
+		return fmt.Errorf("marshal audit before: %w", err)
+	}
+	afterJSON, err := json.Marshal(after)
+	if err != nil {
+		return fmt.Errorf("marshal audit after: %w", err)
+	}
+	_, err = r.pool.Exec(ctx, `
+		INSERT INTO audit_trail (entity_type, entity_id, change_type, before, after, tx_id, block_height)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`, entityType, entityID, changeType, beforeJSON, afterJSON, txID, blockHeight)
+	if err != nil {
+		return fmt.Errorf("insert audit trail: %w", err)
+	}
+	return nil
+}
+
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
 func scanOperations(rows pgx.Rows) ([]Operation, error) {

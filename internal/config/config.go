@@ -8,6 +8,11 @@ const (
 	defaultPort        = "8080"
 	// SessionSecret must be 32+ bytes in production; override via RAXON_SESSION_SECRET.
 	defaultSessionSecret = "change-this-to-a-32-byte-secret!"
+
+	defaultFabricPeerEndpoint  = "localhost:7051"
+	defaultFabricGatewayPeer   = "peer0.org1.example.com"
+	defaultFabricMSPID         = "Org1MSP"
+	defaultFabricChaincodeName = "tokenization"
 )
 
 type Config struct {
@@ -23,6 +28,14 @@ type Config struct {
 	AuthMode         string
 	Environment      string
 	SessionTTL       string
+
+	FabricPeerEndpoint  string
+	FabricGatewayPeer   string
+	FabricTLSCACertPath string
+	FabricMSPID         string
+	FabricCertPath      string
+	FabricKeyPath       string
+	FabricChaincodeName string
 }
 
 func Load() Config {
@@ -39,6 +52,14 @@ func Load() Config {
 		AuthMode:         getEnv("RAXON_AUTH_MODE", "oidc"),
 		Environment:      getEnv("RAXON_ENV", "development"),
 		SessionTTL:       getEnv("RAXON_SESSION_TTL", "8h"),
+
+		FabricPeerEndpoint:  getEnv("RAXON_FABRIC_PEER_ENDPOINT", defaultFabricPeerEndpoint),
+		FabricGatewayPeer:   getEnv("RAXON_FABRIC_GATEWAY_PEER", defaultFabricGatewayPeer),
+		FabricTLSCACertPath: getEnv("RAXON_FABRIC_TLS_CA_CERT_PATH", ""),
+		FabricMSPID:         getEnv("RAXON_FABRIC_MSP_ID", defaultFabricMSPID),
+		FabricCertPath:      getEnv("RAXON_FABRIC_CERT_PATH", ""),
+		FabricKeyPath:       getEnv("RAXON_FABRIC_KEY_PATH", ""),
+		FabricChaincodeName: getEnv("RAXON_FABRIC_CHAINCODE_NAME", defaultFabricChaincodeName),
 	}
 }
 
