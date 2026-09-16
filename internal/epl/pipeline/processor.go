@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -12,7 +11,6 @@ import (
 	"time"
 
 	"raxonplatform/internal/config"
-	"raxonplatform/internal/contracts"
 	"raxonplatform/internal/db/repository"
 
 	"github.com/hyperledger/fabric-gateway/pkg/client"
@@ -69,33 +67,73 @@ func (p *Processor) subscribeAndProcess(ctx context.Context, channelName string)
 	defer gw.Close()
 
 	network := gw.GetNetwork(channelName)
-	events, err := network.ChaincodeEvents(ctx, p.cfg.FabricChaincodeName)
+	checkpoint, err := p.repo.GetCheckpointHeight(ctx, channelName)
 	if err != nil {
-		return fmt.Errorf("open chaincode event stream: %w", err)
+		return fmt.Errorf("read channel checkpoint: %w", err)
+	}
+	options := make([]client.BlockEventsOption, 0, 1)
+	if checkpoint >= 0 {
+		options = append(options, client.WithStartBlock(uint64(checkpoint+1)))
+	}
+	blocks, err := network.BlockEvents(ctx, options...)
+	if err != nil {
+		return fmt.Errorf("open block event stream: %w", err)
 	}
 
 	for {
 		select {
 		case <-ctx.Done():
 			return nil
-		case evt, ok := <-events:
+		case block, ok := <-blocks:
 			if !ok {
-				return errors.New("chaincode event stream closed")
+				return errors.New("block event stream closed")
 			}
-			envelope, err := toEventEnvelope(channelName, evt)
+			decoded, err := decodeBlock(channelName, p.cfg.FabricChaincodeName, block)
 			if err != nil {
-				log.Printf("decode event payload failed tx_id=%s: %v", evt.TransactionID, err)
-				continue
+				return fmt.Errorf("decode committed block: %w", err)
 			}
-			if err := p.repo.SaveEvent(ctx, envelope); err != nil {
-				log.Printf("persist event failed event_id=%s: %v", envelope.EventID, err)
-				continue
-			}
-			if err := p.materialize(ctx, envelope); err != nil {
-				log.Printf("materialize event failed event_id=%s: %v", envelope.EventID, err)
+			if err := p.processBlock(ctx, channelName, decoded); err != nil {
+				return err
 			}
 		}
 	}
+}
+
+func (p *Processor) processBlock(ctx context.Context, channelName string, block decodedBlock) error {
+	if err := p.repo.SaveBlock(ctx, channelName, int64(block.height), block.hash, block.previousHash, len(block.transactions), block.timestamp); err != nil {
+		return err
+	}
+	for _, transaction := range block.transactions {
+		if err := p.repo.SaveTransaction(ctx, channelName, transaction.txID, int64(block.height), transaction.index, transaction.validationCode, transaction.chaincode, transaction.function, transaction.args, transaction.timestamp); err != nil {
+			return err
+		}
+		if transaction.validationCode != 0 {
+			if err := p.repo.SaveInvalidTransaction(ctx, transaction.txID, int64(block.height), fmt.Sprintf("validation code %d", transaction.validationCode)); err != nil {
+				return err
+			}
+			continue
+		}
+		for _, envelope := range transaction.events {
+			eventID, shouldProcess, err := p.repo.SaveEvent(ctx, envelope)
+			if err != nil {
+				return fmt.Errorf("persist event tx_id=%s: %w", envelope.TxID, err)
+			}
+			envelope.EventID = eventID
+			if !shouldProcess {
+				continue
+			}
+			if err := p.materialize(ctx, envelope); err != nil {
+				return fmt.Errorf("materialize event tx_id=%s: %w", envelope.TxID, err)
+			}
+			if err := p.repo.MarkEventProcessed(ctx, envelope); err != nil {
+				return err
+			}
+		}
+	}
+	if err := p.repo.UpdateCheckpoint(ctx, channelName, int64(block.height), block.hash); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *Processor) dialGateway() (*grpc.ClientConn, error) {
@@ -145,24 +183,4 @@ func (p *Processor) loadIdentity() (*identity.X509Identity, identity.Sign, error
 	}
 
 	return id, sign, nil
-}
-
-func toEventEnvelope(channelName string, evt *client.ChaincodeEvent) (contracts.EventEnvelope, error) {
-	var payload map[string]any
-	if len(evt.Payload) > 0 {
-		if err := json.Unmarshal(evt.Payload, &payload); err != nil {
-			return contracts.EventEnvelope{}, fmt.Errorf("unmarshal event payload: %w", err)
-		}
-	}
-	return contracts.EventEnvelope{
-		EventID:            fmt.Sprintf("%s-%d", evt.TransactionID, evt.BlockNumber),
-		ChannelName:        channelName,
-		BlockHeight:        int64(evt.BlockNumber),
-		TxID:               evt.TransactionID,
-		ChaincodeEventName: evt.EventName,
-		EventType:          evt.EventName,
-		Payload:            payload,
-		OccurredAt:         time.Now().UTC(),
-		IngestedAt:         time.Now().UTC(),
-	}, nil
 }

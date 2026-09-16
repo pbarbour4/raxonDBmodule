@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 // handleInvestorSummary returns portfolio totals for the logged-in investor.
@@ -42,7 +43,12 @@ func (s *Server) handleNewOperation(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
-	if body.Type == "" || body.Amount <= 0 {
+	body.Type = strings.ToUpper(body.Type)
+	if body.Type != "ENCUMBRANCE" && body.Type != "UNENCUMBRANCE" {
+		writeErr(w, http.StatusBadRequest, "type must be ENCUMBRANCE or UNENCUMBRANCE")
+		return
+	}
+	if body.Amount <= 0 {
 		writeErr(w, http.StatusBadRequest, "type and amount are required")
 		return
 	}
@@ -57,9 +63,8 @@ func (s *Server) handleNewOperation(w http.ResponseWriter, r *http.Request) {
 		"amount":      body.Amount,
 		"usd_value":   body.USDValue,
 	}
-	env := buildEventEnvelope(body.Type, payload, sess.UserID)
-	if err := s.repo.SaveEvent(r.Context(), env); err != nil {
-		writeErr(w, http.StatusInternalServerError, "failed to save event")
+	if err := s.repo.CreateOperation(r.Context(), body.Type, sess.UserID, payload); err != nil {
+		writeErr(w, http.StatusInternalServerError, "failed to create operation")
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)

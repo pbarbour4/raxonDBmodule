@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Vendors, packages, installs, approves, and commits the tokenization chaincode onto
 # tokenization-channel. Run after create-channel.sh, with the cli container up.
+export MSYS_NO_PATHCONV=1
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 CHANNEL_NAME=tokenization-channel
 CC_NAME=tokenization
@@ -12,7 +13,21 @@ CC_LABEL="${CC_NAME}_${CC_VERSION}"
 ORDERER_CA=/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt
 
 # peer lifecycle chaincode packaging needs all deps present locally (no network in the cli container).
-(cd ../chaincode/tokenization && GO111MODULE=on go mod vendor)
+GO_BIN="$(command -v go || true)"
+if [ -z "$GO_BIN" ] && command -v where.exe >/dev/null 2>&1 && command -v cygpath >/dev/null 2>&1; then
+  WINDOWS_GO="$(where.exe go 2>/dev/null | head -n 1 | tr -d '\r')"
+  if [ -n "$WINDOWS_GO" ]; then
+    GO_BIN="$(cygpath -u "$WINDOWS_GO")"
+  fi
+fi
+if [ -z "$GO_BIN" ] && [ -f "/c/Program Files/Go/bin/go.exe" ]; then
+  GO_BIN="/c/Program Files/Go/bin/go.exe"
+fi
+if [ -z "$GO_BIN" ]; then
+  echo "Go is required to vendor chaincode dependencies. Add Go to PATH and retry." >&2
+  exit 1
+fi
+(cd chaincode/tokenization && GO111MODULE=on "$GO_BIN" mod vendor)
 
 docker exec raxon-fabric-cli peer lifecycle chaincode package "${CC_LABEL}.tar.gz" \
   --path tokenization-chaincode --lang golang --label "$CC_LABEL"

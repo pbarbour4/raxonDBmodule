@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Creates the tokenization-channel genesis block and joins the orderer and peer0.org1 to it.
 # Run after generate-crypto.sh, with the orderer/peer/cli containers up.
+export MSYS_NO_PATHCONV=1
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 CHANNEL_NAME=tokenization-channel
 TOOLS_IMAGE=hyperledger/fabric-tools:2.5
@@ -12,7 +13,7 @@ ROOT="$(pwd)"
 mkdir -p "$ROOT/channel-artifacts"
 
 docker run --rm --network "$NET" \
-  -v "$ROOT/configtx:/configtx" \
+  -v "$ROOT/network/configtx:/configtx" \
   -v "$ROOT/organizations:/organizations" \
   -v "$ROOT/channel-artifacts:/channel-artifacts" \
   -e FABRIC_CFG_PATH=/configtx \

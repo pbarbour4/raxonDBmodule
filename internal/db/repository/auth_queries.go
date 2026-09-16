@@ -17,13 +17,24 @@ type SessionRecord struct {
 	ExpiresAt       time.Time
 }
 
-func (r *Repository) GetDevelopmentUser(ctx context.Context, role string) (*User, error) {
+func (r *Repository) GetDevelopmentUser(ctx context.Context, role, identityLabel string) (*User, error) {
 	var u User
 	err := r.pool.QueryRow(ctx, `
 		SELECT id, email, role, oidc_subject, institution_name, created_at
 		FROM users
-		WHERE role = $1 AND oidc_subject = 'demo|' || role
-	`, role).Scan(&u.ID, &u.Email, &u.Role, &u.OIDCSubject, &u.InstitutionName, &u.CreatedAt)
+		WHERE role = $1
+		  AND (
+			($2 = '' AND oidc_subject = 'demo|' || role)
+			OR EXISTS (
+				SELECT 1
+				FROM fabric_identity_mappings m
+				WHERE m.user_id = users.id
+				  AND m.identity_label = $2
+			)
+		  )
+		ORDER BY id
+		LIMIT 1
+	`, role, identityLabel).Scan(&u.ID, &u.Email, &u.Role, &u.OIDCSubject, &u.InstitutionName, &u.CreatedAt)
 	if err == pgx.ErrNoRows {
 		return nil, nil
 	}

@@ -2,19 +2,20 @@
 # Registers the 2 investor and 1 custodian test identities against Org1's CA, each carrying a
 # custom "role" attribute that the chaincode checks via cid.GetAttributeValue. Run after
 # generate-crypto.sh. Produces flat wallets consumed by cmd/fabriccli (Phase D).
+export MSYS_NO_PATHCONV=1
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 FABRIC_CA_CLIENT_IMAGE=hyperledger/fabric-ca:1.5
 NET=raxon-fabric
 ORGS_DIR="$(pwd)/organizations"
-WALLETS_DIR="$(pwd)/wallets"
+WALLETS_DIR="$(pwd)/network/wallets"
 
 register_and_enroll() {
   local name=$1 secret=$2 role=$3
   docker run --rm --network "$NET" \
     -v "$ORGS_DIR:/organizations" \
-    -e FABRIC_CA_CLIENT_HOME=/organizations/fabric-ca-client \
+    -e FABRIC_CA_CLIENT_HOME=/organizations/fabric-ca-client/ca-org1 \
     "$FABRIC_CA_CLIENT_IMAGE" sh -c "
       fabric-ca-client register --caname ca-org1 --id.name $name --id.secret $secret --id.type client \
         --id.attrs 'role=$role:ecert' \

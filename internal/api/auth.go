@@ -197,7 +197,7 @@ func (s *Server) handleDevLogin(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login?error=invalid_role", http.StatusSeeOther)
 		return
 	}
-	user, err := s.repo.GetDevelopmentUser(r.Context(), role)
+	user, err := s.repo.GetDevelopmentUser(r.Context(), role, r.FormValue("identity"))
 	if err != nil || user == nil {
 		_ = s.repo.RecordLoginAudit(r.Context(), "", "", role, "dev", "failure", "test_user_not_found", clientIP(r), r.UserAgent())
 		http.Redirect(w, r, "/login?error=test_user_not_found", http.StatusSeeOther)

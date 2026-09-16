@@ -160,6 +160,21 @@ func (r *Repository) GetOperationsByOwner(ctx context.Context, ownerID string, l
 	return scanOperations(rows)
 }
 
+func (r *Repository) CreateOperation(ctx context.Context, opType, requestedBy string, payload map[string]any) error {
+	payloadJSON, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal operation payload: %w", err)
+	}
+	_, err = r.pool.Exec(ctx, `
+		INSERT INTO operations (type, status, requested_by, request_payload)
+		VALUES ($1, 'requested', $2, $3)
+	`, opType, requestedBy, payloadJSON)
+	if err != nil {
+		return fmt.Errorf("create operation: %w", err)
+	}
+	return nil
+}
+
 // ── Lender queries ────────────────────────────────────────────────────────────
 
 func (r *Repository) GetLenderSummary(ctx context.Context) (LenderSummary, error) {

@@ -33,6 +33,10 @@ func (p *Processor) materialize(ctx context.Context, e contracts.EventEnvelope) 
 
 func (p *Processor) applyBalanceEvent(ctx context.Context, e contracts.EventEnvelope, sign float64) error {
 	ownerID, _ := e.Payload["owner_id"].(string)
+	ownerID, err := p.repo.ResolveFabricIdentity(ctx, ownerID)
+	if err != nil {
+		return err
+	}
 	tokenID, _ := e.Payload["token_id"].(string)
 	amount, _ := e.Payload["amount"].(float64)
 	return p.repo.UpsertBalanceDelta(ctx, ownerID, tokenID, sign*amount, 0, e.BlockHeight)
@@ -48,14 +52,30 @@ func (p *Processor) applyNAV(ctx context.Context, e contracts.EventEnvelope) err
 func (p *Processor) applyRequested(ctx context.Context, e contracts.EventEnvelope) error {
 	requestID, _ := e.Payload["request_id"].(string)
 	requestedBy, _ := e.Payload["requested_by"].(string)
+	requestedBy, err := p.repo.ResolveFabricIdentity(ctx, requestedBy)
+	if err != nil {
+		return err
+	}
+	payload := canonicalizePayload(e.Payload, p.repo, ctx)
 	opType := strings.TrimSuffix(e.EventType, "_REQUESTED")
-	return p.repo.InsertOperationFromEvent(ctx, requestID, opType, "requested", requestedBy, e.Payload, e.TxID)
+	return p.repo.InsertOperationFromEvent(ctx, requestID, opType, "requested", requestedBy, payload, e.TxID)
 }
 
 func (p *Processor) applyApproved(ctx context.Context, e contracts.EventEnvelope) error {
 	requestID, _ := e.Payload["request_id"].(string)
 	ownerID, _ := e.Payload["owner_id"].(string)
 	counterpartyID, _ := e.Payload["counterparty_id"].(string)
+	resolvedOwnerID, err := p.repo.ResolveFabricIdentity(ctx, ownerID)
+	if err != nil {
+		return err
+	}
+	ownerID = resolvedOwnerID
+	if counterpartyID != "" {
+		counterpartyID, err = p.repo.ResolveFabricIdentity(ctx, counterpartyID)
+		if err != nil {
+			return err
+		}
+	}
 	tokenID, _ := e.Payload["token_id"].(string)
 	amount, _ := e.Payload["amount"].(float64)
 	opType := strings.TrimSuffix(e.EventType, "_APPROVED")
@@ -101,4 +121,23 @@ func (p *Processor) applyRejected(ctx context.Context, e contracts.EventEnvelope
 	}
 	return p.repo.InsertAuditTrail(ctx, "operation", requestID, "STATUS_CHANGE",
 		map[string]string{"status": "requested"}, e.Payload, e.TxID, e.BlockHeight)
+}
+
+func canonicalizePayload(payload map[string]any, repo interface {
+	ResolveFabricIdentity(context.Context, string) (string, error)
+}, ctx context.Context) map[string]any {
+	canonical := make(map[string]any, len(payload))
+	for key, value := range payload {
+		canonical[key] = value
+	}
+	for _, key := range []string{"owner_id", "counterparty_id"} {
+		identity, ok := canonical[key].(string)
+		if !ok || identity == "" {
+			continue
+		}
+		if userID, err := repo.ResolveFabricIdentity(ctx, identity); err == nil {
+			canonical[key] = userID
+		}
+	}
+	return canonical
 }
